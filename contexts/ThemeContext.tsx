@@ -13,10 +13,8 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light')
-  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
     // Load theme from localStorage
     const savedTheme = localStorage.getItem('deonpay-theme') as Theme
     if (savedTheme) {
@@ -36,11 +34,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setTheme(newTheme)
     localStorage.setItem('deonpay-theme', newTheme)
     document.documentElement.setAttribute('data-theme', newTheme)
-  }
-
-  // Prevent flash of unstyled content
-  if (!mounted) {
-    return <>{children}</>
   }
 
   return (
