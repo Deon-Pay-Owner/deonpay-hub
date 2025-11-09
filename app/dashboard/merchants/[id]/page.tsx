@@ -4,19 +4,20 @@ import Link from 'next/link'
 import { ArrowLeft, Building2, User, Calendar, Key, Activity } from 'lucide-react'
 
 interface MerchantDetailsPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function MerchantDetailsPage({ params }: MerchantDetailsPageProps) {
+  const { id } = await params
   const supabase = await createClient()
 
   // Fetch merchant data
   const { data: merchant, error } = await supabase
     .from('merchants')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (error || !merchant) {
