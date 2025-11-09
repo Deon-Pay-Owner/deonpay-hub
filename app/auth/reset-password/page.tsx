@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Shield, Lock, AlertCircle, CheckCircle } from 'lucide-react'
+import { createBrowserClient } from '@supabase/ssr'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -11,6 +12,32 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [hasToken, setHasToken] = useState(false)
+
+  useEffect(() => {
+    // Check if there's a recovery token in the URL hash
+    const hashParams = new URLSearchParams(window.location.hash.substring(1))
+    const accessToken = hashParams.get('access_token')
+    const type = hashParams.get('type')
+
+    if (accessToken && type === 'recovery') {
+      setHasToken(true)
+
+      // Create Supabase client and set the session
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      )
+
+      // Set the session with the recovery token
+      supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: hashParams.get('refresh_token') || '',
+      })
+    } else {
+      setError('Invalid or missing recovery token. Please request a new password reset link.')
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,7 +94,25 @@ export default function ResetPasswordPage() {
         </div>
 
         <div className="glass rounded-2xl shadow-2xl p-8">
-          {success ? (
+          {!hasToken && error ? (
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-red-500 rounded-full mb-4">
+                <AlertCircle className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-semibold text-white mb-2">
+                Invalid Link
+              </h2>
+              <p className="text-white/80 mb-4">
+                {error}
+              </p>
+              <button
+                onClick={() => router.push('/login')}
+                className="bg-white text-indigo-600 font-semibold px-6 py-2 rounded-lg hover:bg-white/90 transition-colors"
+              >
+                Back to Login
+              </button>
+            </div>
+          ) : success ? (
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500 rounded-full mb-4">
                 <CheckCircle className="w-8 h-8 text-white" />
