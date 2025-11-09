@@ -82,13 +82,7 @@ export async function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, {
-                ...options,
-                domain: process.env.SUPABASE_COOKIE_DOMAIN || '.deonpay.mx',
-                secure: true,
-                httpOnly: true,
-                sameSite: 'lax',
-              })
+              cookieStore.set(name, value, options)
             })
           } catch (error) {
             // The `setAll` method was called from a Server Component.
