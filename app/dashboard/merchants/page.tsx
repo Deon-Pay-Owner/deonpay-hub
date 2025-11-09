@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase'
 import { Building2, Plus } from 'lucide-react'
+import Link from 'next/link'
 
 export default async function MerchantsPage() {
   const supabase = await createClient()
@@ -61,9 +62,12 @@ export default async function MerchantsPage() {
                     {new Date(merchant.created_at).toLocaleDateString()}
                   </td>
                   <td className="p-4">
-                    <button className="text-[var(--color-primary)] hover:underline text-sm">
+                    <Link
+                      href={`/dashboard/merchants/${merchant.id}`}
+                      className="text-[var(--color-primary)] hover:underline text-sm"
+                    >
                       View Details
-                    </button>
+                    </Link>
                   </td>
                 </tr>
               ))
