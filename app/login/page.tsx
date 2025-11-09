@@ -1,18 +1,7 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase'
 import LoginForm from './LoginForm'
 import { Shield } from 'lucide-react'
 
-export default async function LoginPage() {
-  const supabase = await createClient()
-  
-  // Check if user is already authenticated
-  const { data: { user } } = await supabase.auth.getUser()
-  
-  if (user) {
-    redirect('/dashboard')
-  }
-  
+export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4">
       <div className="w-full max-w-md">

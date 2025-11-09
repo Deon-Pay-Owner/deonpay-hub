@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Mail, Lock, AlertCircle } from 'lucide-react'
 import { login } from './actions'
 
 export default function LoginForm() {
+  const router = useRouter()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -17,6 +19,9 @@ export default function LoginForm() {
       if (result?.error) {
         setError(result.error)
         setLoading(false)
+      } else if (result?.success) {
+        // Success! Redirect to dashboard
+        window.location.href = '/dashboard'
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during login')

@@ -1,7 +1,5 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 
 export async function login(formData: FormData) {
@@ -39,6 +37,6 @@ export async function login(formData: FormData) {
     return { error: 'Invalid credentials' }
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  // Return success - let the client handle redirect
+  return { success: true }
 }
